@@ -58,11 +58,13 @@ class ScheduleParser:
         self.cache = cache
         self.circuit_breaker = circuit_breaker
 
-        # Common time patterns
+        # Common time patterns, tried in order. The with-minutes form must come
+        # first: the hour-only form would otherwise match the minutes of
+        # "3:30pm" ("30pm") and return hour 42.
         self.time_patterns = {
             # 12-hour format
-            r"(\d{1,2})\s*(am|pm)": self._parse_12hour,
             r"(\d{1,2}):(\d{2})\s*(am|pm)": self._parse_12hour_minutes,
+            r"(\d{1,2})\s*(am|pm)": self._parse_12hour,
             # 24-hour format
             r"(\d{1,2}):(\d{2})": self._parse_24hour,
             r"(\d{1,2})h(\d{2})": self._parse_24hour,
