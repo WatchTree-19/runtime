@@ -703,7 +703,9 @@ Return only valid JSON, no explanation.
             Cron day specification or None
         """
         for day_text, day_spec in self.day_patterns.items():
-            if day_text in text:
+            # Match at the start of a word, but not "mon" in "month"/"monthly".
+            # Abbreviations such as "tues" and "thurs" still match.
+            if re.search(rf"\b{re.escape(day_text)}(?!th)", text):
                 return day_spec
 
         return None
